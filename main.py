@@ -1,49 +1,42 @@
 import os
-from random import randint
-#from nextcord import Embed
 from nextcord.ext import commands
-from embed import embedMsg
+from utilFunctions import embedMsg
+from dice import simpleDiceRoll
+from choice import chooseList
 
 bot = commands.Bot(command_prefix=('$', '!'))
 
 # ping command
 @bot.command()
-async def ping(ctx):
-    await embedMsg(ctx, '🏓', 'pong', f'latency: {int(1000 * bot.latency)} ms')
+async def ping(ctx): await embedMsg(ctx, '🏓', 'pong', f'latency: {int(1000 * bot.latency)} ms')
 
-# d6 command
+# choice commands
 @bot.command()
-async def d6(ctx, dice = 1):    
-    try:
-        dice = int(dice)
-    except ValueError:
-        dice = 1
+async def choose(ctx, *args): await chooseList(ctx, args);
 
-    if dice > 1000:
-        embedMsg(ctx, '🎲', 'too many dice')
-    elif dice > 10:
-        res = [0, 0, 0, 0, 0, 0]
-        total = 0
-        desc = ''
-        for i in range(dice):
-            rand = randint(0, 5)
-            res[rand] += 1
-            total += rand
+# d[N] commands
+@bot.command()
+async def d2(ctx, dice = 1): await simpleDiceRoll(ctx, 2, dice)
+    
+@bot.command()
+async def d4(ctx, dice = 1): await simpleDiceRoll(ctx, 4, dice)
+    
+@bot.command()
+async def d6(ctx, dice = 1): await simpleDiceRoll(ctx, 6, dice)
 
-        for idx, i in enumerate(res):
-            desc += f'rolled {idx+1}:  {i}\n'
+@bot.command()
+async def d8(ctx, dice = 1): await simpleDiceRoll(ctx, 8, dice)
 
-        await embedMsg(ctx, '🎲', total, desc)     
-    elif dice <= 1:    
-        await embedMsg(ctx, '🎲', randint(1, 6))
-    else:
-        total = 0
-        desc = ''
-        for i in range(dice):
-            rand = randint(1, 6)
-            total += rand
-            desc += f'roll {i+1}:  {rand}\n'
+@bot.command()
+async def d10(ctx, dice = 1): await simpleDiceRoll(ctx, 10, dice)
 
-        await embedMsg(ctx, '🎲', total, desc)
-            
+@bot.command()
+async def d12(ctx, dice = 1): await simpleDiceRoll(ctx, 12, dice)
+
+@bot.command()
+async def d20(ctx, dice = 1): await simpleDiceRoll(ctx, 20, dice)
+
+@bot.command()
+async def d100(ctx, dice = 1): await simpleDiceRoll(ctx, 100, dice)
+
 bot.run(os.environ['token'])

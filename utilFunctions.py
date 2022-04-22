@@ -1,4 +1,5 @@
 from nextcord import Embed
+import re
 
 # helper functions
 async def embedMsg(ctx, emoji, title, desc = '', col = 0x5865F2):  
@@ -15,3 +16,6 @@ async def embedMsg(ctx, emoji, title, desc = '', col = 0x5865F2):
             color = col
         )
     await ctx.reply('', embed = e)
+
+async def parseMention(bot, msg):
+    re.search()
