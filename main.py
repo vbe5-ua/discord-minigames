@@ -2,7 +2,7 @@ import os
 from nextcord.ext import commands
 from utilFunctions import embedMsg
 from dice import simpleDiceRoll
-from choice import chooseList
+from choice import chooseList, chooseTeams
 
 bot = commands.Bot(command_prefix=('$', '!'))
 
@@ -13,6 +13,9 @@ async def ping(ctx): await embedMsg(ctx, '🏓', 'pong', f'latency: {int(1000 * 
 # choice commands
 @bot.command()
 async def choose(ctx, *args): await chooseList(ctx, args);
+
+@bot.command()
+async def team(ctx, *args): await chooseTeams(ctx, args);
 
 # d[N] commands
 @bot.command()

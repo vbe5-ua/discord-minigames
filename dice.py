@@ -1,6 +1,7 @@
 from utilFunctions import embedMsg
 from random import randint
 from math import floor, log
+import py_expression_eval as 
 
 async def simpleDiceRoll(ctx, faces, dice = 1):    
     try:
@@ -9,9 +10,9 @@ async def simpleDiceRoll(ctx, faces, dice = 1):
         dice = 1
 
     if dice > 1000:
-        await embedMsg(ctx, '🎲', 'too many dice', 'max: 1000 dice')
+        await embedMsg(ctx, '🎲', 'too many dice', '⚠️  max: 1000 dice')
     elif faces > 100000:
-        await embedMsg(ctx, '🎲', 'too many faces', 'max: 100000 faces per die')
+        await embedMsg(ctx, '🎲', 'too many faces', '⚠️  max: 100000 faces per die')
     elif dice <= 1:
         await embedMsg(ctx, '🎲', randint(1, faces))
     else:
@@ -46,3 +47,9 @@ async def simpleDiceRoll(ctx, faces, dice = 1):
                 desc += f'rolled {(power10*idx)+1}-{min(faces, power10*(1+idx))}:  {i} times\n'
         
         await embedMsg(ctx, '🎲', total, desc)
+
+async def roll(ctx, str):
+    
+            
+    
+    
