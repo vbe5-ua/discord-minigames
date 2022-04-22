@@ -1,18 +1,21 @@
 from utilFunctions import embedMsg
 from random import randint
-from math import floor, log
-import py_expression_eval as 
+from math import log, floor
+import d20
 
 async def simpleDiceRoll(ctx, faces, dice = 1):    
     try:
         dice = int(dice)
     except ValueError:
-        dice = 1
+        await embedMsg(ctx, '🎲', 'invalid query', '⚠️ dice count must be an integer.')
+        return
 
     if dice > 1000:
-        await embedMsg(ctx, '🎲', 'too many dice', '⚠️  max: 1000 dice')
-    elif faces > 100000:
-        await embedMsg(ctx, '🎲', 'too many faces', '⚠️  max: 100000 faces per die')
+        await embedMsg(ctx, '🎲', 'too many dice', '⚠️ tried to roll more than 1000 dice.')
+    elif faces <= 0:
+        await embedMsg(ctx, '🎲', 'negative faces', f'⚠️ cannot roll a {faces}-sided die.')
+    elif faces > 1_000_000_000_000:
+        await embedMsg(ctx, '🎲', 'too many faces', '⚠️ tried to roll a dice with more than a trillion faces.')
     elif dice <= 1:
         await embedMsg(ctx, '🎲', randint(1, faces))
     else:
@@ -48,8 +51,45 @@ async def simpleDiceRoll(ctx, faces, dice = 1):
         
         await embedMsg(ctx, '🎲', total, desc)
 
-async def roll(ctx, str):
+async def complexDiceRoll(ctx, expr):
+    try:
+        result = d20.roll(expr, stringifier=CustomStringifier())
+        if result.total > 1_000_000_000_000:
+            await embedMsg(ctx, '🎲', 'result too large', f'⚠️ result was bigger than 1 trillion.')
+        else:
+            await embedMsg(ctx, '🎲', result.total, str(result))
+    except (d20.RollSyntaxError, d20.RollValueError) as e:
+        await embedMsg(ctx, '🎲', 'invalid query', f'⚠️ {str(e).lower()}')
+    except d20.TooManyRolls:
+        await embedMsg(ctx, '🎲', 'too many dice', '⚠️ tried to roll more than 1000 dice.')
+
+class CustomStringifier(d20.MarkdownStringifier):        
+    def _str_expression(self, node):
+        return f"{self._stringify(node.roll)} = {node.total}"
+
+    def _str_die(self, node):
+        rolls = []        
+        for val in node.values:
+            inside = self._stringify(val)
+            rolls.append(inside)
+
+        return ' '.join(rolls)
     
-            
+    def _str_dice(self, node):
+        if len(node.values) > 10:
+            total = 0
+            for val in node.values:
+                total += int(self._stringify(val))
+
+            print(f'total = {total}')
+            return f'{node.num}d{node.size} ({total})'
+        else:
+            rolls = []
+            total = 0
+            for val in node.values:
+                str = self._stringify(val)
+                rolls.append(str)
+                total += int(str)
     
-    
+            print(rolls);
+            return f'{node.num}d{node.size} ({total}, ' + ' '.join(rolls) + ')'
