@@ -14,7 +14,4 @@ async def chooseList(ctx, list):
         await embedMsg(ctx, '📚', 'too many items', 'max: 50 item choices.')
     else:
         c = choices(list, k = amount)
-        if len(c) <= 10:
-            await embedMsg(ctx, '📚', ', '.join(c))
-        else:
-            await embedMsg(ctx, '📚', f'chose {amount} items', ', '.join(c))
+        await embedMsg(ctx, '📚', f'chose {amount} ' + ('item' if (amount == 1) else 'items'), ', '.join(c))
