@@ -70,9 +70,11 @@ async def d100(ctx, dice = '1'): await randomCmd.simpleDice(ctx, 100, dice)
 
 # time commands
 
-@bot.command(aliases = [])
+@bot.command(aliases = ['hour', 'reloj', 'hora'])
 async def clock(ctx, *args): await timeCmd.clock(ctx, args)
-    
+
+@bot.command(aliases = ['día', 'dia'])
+async def day(ctx, *args): await timeCmd.day(ctx, args)
     
 # game commands
 @bot.command()

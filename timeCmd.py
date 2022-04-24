@@ -2,6 +2,7 @@ from utilFunctions import embedMsg, embedErr
 from pytz import timezone
 from datetime import datetime
 from collections import namedtuple
+import time
 
 TZ = namedtuple('TZ', ('zone', 'aliases'))
 
@@ -9,9 +10,9 @@ tzs = {
     '🇪🇸 es': TZ('Europe/Madrid', ('es', 'esp', 'españa', 'spain')),
     '🇮🇨 ic': TZ('Atlantic/Canary', ('ic', 'ica', 'isl', 'is', 'islas canarias', 'canarias', 'canary', 'canary islands')),
     '🇲🇽 mx': TZ('America/Mexico_City', ('mx', 'me', 'mex', 'méxico')),
-    '🇦🇷 ar': TZ('America/Argentina/Buenos_Aires', ('ar', 'arg', 'argentina')),
     '🇨🇴 co': TZ('America/Bogota', ('co', 'col', 'colombia')),
     '🇧🇴 bo': TZ('America/La_Paz', ('bo', 'bol', 'bolivia')),
+    '🇦🇷 ar': TZ('America/Argentina/Buenos_Aires', ('ar', 'arg', 'argentina')),
 }
 
 def getAlias(zone):
@@ -23,6 +24,8 @@ def getAlias(zone):
 async def clock(ctx, zonesRaw):    
     if len(zonesRaw) == 0 or zonesRaw[0] == 'all':
         zones = list(tzs.keys())
+    elif zonesRaw[0] == 'latam':
+        zones = list(tzs.keys())[2:]
     else:
         zones = list(map(getAlias, zonesRaw))
         for z, raw in zip(zones, zonesRaw):
@@ -39,3 +42,6 @@ async def clock(ctx, zonesRaw):
             desc += f'{zone}: {datetime.now(tz=timezone(tzs[zone].zone)) :%H:%M}\n'
             
         await embedMsg(ctx, '🕒', f'{datetime.now(tz=timezone(tzs[zones[0]].zone)) :%H:%M} ({zones[0]})', desc)
+
+
+async def day(ctx): embedMsg(ctx, '📅', )
