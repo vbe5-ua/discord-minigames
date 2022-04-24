@@ -15,6 +15,9 @@ tzs = {
     '🇦🇷 ar': TZ('America/Argentina/Buenos_Aires', ('ar', 'arg', 'argentina')),
 }
 
+dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
 def getAlias(zone):
     for tz, al in tzs.items():
         if zone in al.aliases:
@@ -37,11 +40,12 @@ async def clock(ctx, zonesRaw):
         await embedMsg(ctx, '🕒', f'{datetime.now(tz=timezone(tzs[zones[0]].zone)) :%H:%M} ({zones[0]})')
     else:
         desc = ''
-        print(zones)
         for zone in zones[1:]:
             desc += f'{zone}: {datetime.now(tz=timezone(tzs[zone].zone)) :%H:%M}\n'
             
         await embedMsg(ctx, '🕒', f'{datetime.now(tz=timezone(tzs[zones[0]].zone)) :%H:%M} ({zones[0]})', desc)
 
 
-async def day(ctx): embedMsg(ctx, '📅', )
+async def day(ctx): 
+    now = datetime.utcnow()
+    await embedMsg(ctx, '📅', f'{dias[now.weekday()]}, {now.day} de {meses[int(now.month) - 1]} de {now.year}')
